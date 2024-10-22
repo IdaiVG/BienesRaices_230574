@@ -1,0 +1,38 @@
+{
+  "name": "mx.edu.utxj.ti.awos.bienes-raices",
+  "version": "1.0.0",
+  "description": "Proyecto de Clase para la Unidad 2, de la asignatura AWOS utilizando Node.js",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "saluda":"node saluda.js",
+    "server":"nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IdaiVG/BienesRaices_230574.git"
+  },
+  "keywords": [
+    "MVC",
+    "Express",
+    "Sequielize",
+    "MyAQL",
+    "Tailwind",
+    "Nodemon",
+    "NodeJS",
+    "Mailtrap",
+    "JWT"
+  ],
+  "author": "Guadalupe Idai Vargas Galindo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IdaiVG/BienesRaices_230574/issues"
+  },
+  "homepage": "https://github.com/IdaiVG/BienesRaices_230574#readme",
+  "dependencies": {
+    "express": "^4.21.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}
