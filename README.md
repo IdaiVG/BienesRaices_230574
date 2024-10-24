@@ -8,8 +8,9 @@ Para poder demostrar y aprender la creación y consumo de interfaces de Programa
 ## Historial de prácticas
 |No.|Fecha|Descripción|Potenciador|Estatus|
 |---|---|---|---|---|
-|8.|17/10/2024|Nuevo Repositorio del proyecto implementado .gitignore|1|⭐Activa|
-|9.|22/10/2024|Creación de una Aplicación Web usando Express|11|⭐Activa|
+|8.|17/10/2024|Nuevo Repositorio del proyecto implementado .gitignore|1|Finalizada|
+|9.|22/10/2024|Creación de una Aplicación Web usando Express|11|⭐Finalizada|
+|10.|24/10/2024|Operaciones Básicas de una API a traves de los verbos HTTP||⭐ Activa|
 
 ## Autor
 **Guadalupe Idai Vargas Galindo** / [@IdaiVG](https://github.com/IdaiVG)<br>
