@@ -5,8 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "saluda":"node saluda.js",
-    "server":"nodemon index.js"
+    "saluda": "node saluda.js",
+    "server": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -30,7 +30,8 @@
   },
   "homepage": "https://github.com/IdaiVG/BienesRaices_230574#readme",
   "dependencies": {
-    "express": "^4.21.1"
+    "express": "^4.21.1",
+    "pug": "^3.0.3"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"
