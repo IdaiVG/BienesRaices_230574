@@ -1,6 +1,8 @@
-h2 Login 
-div 
-    if  autenticado
-        p Bienvenido al sistema de Bienes Raíces. 
-    else
-        p Por favor ingresa tus datos para iniciar sesión.
+extends ../layout/index
+
+block contenido 
+    div 
+        if  autenticado
+            p.text-center.font-bold.text-2xl.text-indigo-600 Bienvenido al sistema de Bienes Raíces. 
+        else
+            p.text-center.font-bold.text-2xl.text-indigo-600 Por favor ingresa tus datos para iniciar sesión.

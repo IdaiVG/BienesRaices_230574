@@ -10,6 +10,9 @@ import userRoutes from './routes/userRoutes.js'
 
 const app = express();
 
+//Definir la carpeta pública de recursos estáticos (assets)
+app.use(express.static('./public'));
+
 //CONFIGURAMOS NUESTRO SERVIDOR WEB (puerto donde estara escuchando nuestro sitio web)
 const port = 3000;
 app.listen(port, () => {
