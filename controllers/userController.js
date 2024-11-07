@@ -18,7 +18,11 @@ const formularioPasswordRecovery = (request,response)=>{
     })
 }
 
-export {formularioLogin,formularioRegister,formularioPasswordRecovery}
+const registrar=(req,res)=>{
+    console.log('Registrando..')
+}
+
+export {formularioLogin,formularioRegister,formularioPasswordRecovery,registrar}
 
 
 
