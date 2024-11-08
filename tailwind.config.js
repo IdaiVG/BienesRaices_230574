@@ -2,17 +2,14 @@
 export default {
   content: ['./views/**/*.pug'],
   theme: {
-    extend: {},
-    colors:{
-      transparent: 'transparent',
-      current:'currentColor',
-      'black':'#000000',
-      'white':'#ffffff',
-      'winkle':'#DDD6FE',
-      'palePurple':'F3E8FF',
-      'peri':'C7D2FE',
+    colors: {
+      'black': '#000000',
+      'white': '#ffffff',
+      'winkle': '#ddd6fe',
+      'palePurple': '#f3e8ff',
+      'peri': '#c7d2fe',
     },
+    extend: {},
   },
   plugins: [],
 }
-
