@@ -4,7 +4,7 @@
 import express from 'express';
 import generalRoutes from './routes/generalRoutes.js'
 import userRoutes from './routes/userRoutes.js'
-import db from './config/db.js'
+import db from './db/config.js'
 //const express = require('express'); //DECLARANDO UN OBJETO QUE VA A PERMITIR LEER PAGINAS ETC.importar la libreria para crear un servidor web
 
 //INSTANCIAR NUESTRA APLICACIÓN WEB
@@ -13,7 +13,8 @@ const app = express();
 
 //Conexión a la base de datos
 try{
-  await db.authenticate();
+  await db.authenticate();//verifico las credenciales del usuario
+  db.sync();//sincroniza las tablas con los modelos
   console.log('Conexión Correcta a la Base de Datos')
 }catch(error){
   console.log(error)
@@ -39,3 +40,6 @@ app.use('/auth/', userRoutes);
 app.set('view engine','pug')
 app.set('views','./views')//se define donde tendrá el proyecto las vistas
 //auth -> auntentificación
+
+//Habilitamos la lectura de datos desde formularios
+app.use(express.urlencoded({encoded:true}));
