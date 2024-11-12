@@ -592,6 +592,17 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(221 214 254 / var(--tw-bg-opacity));
 }
+.bg-palePurple {
+  --tw-bg-opacity: 1;
+  background-color: rgb(243 232 255 / var(--tw-bg-opacity));
+}
+.bg-peri {
+  --tw-bg-opacity: 1;
+  background-color: rgb(199 210 254 / var(--tw-bg-opacity));
+}
+.p-2 {
+  padding: 0.5rem;
+}
 .px-2 {
   padding-left: 0.5rem;
   padding-right: 0.5rem;

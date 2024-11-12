@@ -19,6 +19,8 @@ try{
 }catch(error){
   console.log(error)
 }
+//Habilitamos la lectura de datos desde formularios
+app.use(express.urlencoded({encoded:true}));
 
 //Definir la carpeta pública de recursos estáticos (assets)
 app.use(express.static('./public'));
@@ -41,5 +43,3 @@ app.set('view engine','pug')
 app.set('views','./views')//se define donde tendrá el proyecto las vistas
 //auth -> auntentificación
 
-//Habilitamos la lectura de datos desde formularios
-app.use(express.urlencoded({encoded:true}));
