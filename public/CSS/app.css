@@ -584,6 +584,10 @@ video {
 .border {
   border-width: 1px;
 }
+.bg-reds {
+  --tw-bg-opacity: 1;
+  background-color: rgb(189 41 41 / var(--tw-bg-opacity));
+}
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
@@ -591,14 +595,6 @@ video {
 .bg-winkle {
   --tw-bg-opacity: 1;
   background-color: rgb(221 214 254 / var(--tw-bg-opacity));
-}
-.bg-palePurple {
-  --tw-bg-opacity: 1;
-  background-color: rgb(243 232 255 / var(--tw-bg-opacity));
-}
-.bg-peri {
-  --tw-bg-opacity: 1;
-  background-color: rgb(199 210 254 / var(--tw-bg-opacity));
 }
 .p-2 {
   padding: 0.5rem;

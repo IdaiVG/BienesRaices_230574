@@ -8,6 +8,7 @@ export default {
       'winkle': '#ddd6fe',
       'palePurple': '#f3e8ff',
       'peri': '#c7d2fe',
+      'reds':'#bd2929',
     },
     extend: {},
   },
