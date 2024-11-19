@@ -1,7 +1,8 @@
 import{check,validationResult} from "express-validator";
 import User from '../models/User.js';
-import { generateId } from '../helpers/tokens.js'
-import { where } from "sequelize";
+import {generateId} from "../helpers/tokens.js"
+import { emailAfterRegister } from "../helpers/email.js";
+
 const formularioLogin=(req,res)=>{
     res.render('auth/login',{
         //con la coma decimos que hay un segundo parámetro
@@ -71,13 +72,25 @@ const createNewUser=async(req,res)=>{
         password:req.body.pass_usuario,
     });
     res.json(newUser);
+
+    //Enviar el correo de confirmación
+    emailAfterRegister({
+        name: newUser.name,
+        email:newUser.email,
+        token:newUser.token
+    })
     res.render('templates/message',{
         page: 'Cuenta creada correctamente',
         message: 'Hemos enviado un Email de Confirmación',
     })
 }
+const confirm=(req,res)=>
+{
+    const {token}=req.params
+    console.log(`Intentando confirmar la cuenta con el token: ${req.params.token}`)
+}
 
-export {formularioLogin,formularioRegister,formularioPasswordRecovery,createNewUser}
+export {formularioLogin,formularioRegister,formularioPasswordRecovery,createNewUser,confirm}
 
 
 
