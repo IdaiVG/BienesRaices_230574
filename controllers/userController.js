@@ -1,6 +1,7 @@
 import{check,validationResult} from "express-validator";
 import User from '../models/User.js';
-import { genetatetId } from '../helpers/tokens.js'
+import { generateId } from '../helpers/tokens.js'
+import { where } from "sequelize";
 const formularioLogin=(req,res)=>{
     res.render('auth/login',{
         //con la coma decimos que hay un segundo parámetro
