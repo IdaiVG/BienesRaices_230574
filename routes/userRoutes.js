@@ -43,7 +43,7 @@ router.delete("/deleteUser/:email", function(request,response){
 router.get("/login",formularioLogin/*Middelware*/)
 router.get("/createAccount",formularioRegister)
 router.post("/createAccount",createNewUser)
-router.get("/confirmAccount/:token",confirm )
+router.get('/confirm/:token',confirm )
 router.get("/passwordRecovery",formularioPasswordRecovery)
 
 export default router;
