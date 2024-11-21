@@ -9,7 +9,7 @@ block contenido
         if errors
             div(class="max-w-md mx-auto my-10")
                 each error in errors
-                    div(class="bg-redd text-white p-4 rounded-md flex items-center justify-between mb-2")
+                    div(class="bg-reds text-white p-4 rounded-md flex items-center justify-between mb-2")
                         p(class="text-sm font-bold")= error.msg
                         button(class="ml-2 bg-transparent border-0 text-white" onclick="this.parentElement.style.display='none'") &times;
         .mt-8.mx-auto.max-w-md
@@ -31,6 +31,4 @@ block contenido
                     div.flex.items-center.justify-between
                         a.text-gray-500.text-xs(href="/auth/login" class="hover:underline decoration2 hover:decoration-peri") ¿Ya tienes cuenta? Incia sesión
                         a.text-gray-500.text-xs(href="/auth/passwordRecovery" class="hover:underline decoration2 hover:decoration-peri") Olvide mi Contraseña
-                        
-
                     input(class="w-full bg-winkle hover:bg-palePurple text-white font-bold py-3 cursor-pointer" type="submit" value="Crear una Cuenta")

@@ -48,7 +48,7 @@ const createNewUser=async(req,res)=>{
     res.json(resultado.array());
 
     //Destructuura los parametros del request
-    const {nombre_usuario:name, correo_usuario:email,pass_usuario}=req.body
+    const {name, email, password}=req.body
     //Verificar que el usuario no existe previamente en la BD
     const existingUser=await User.findOne({where:{email}})
     console.log(existingUser)
@@ -58,7 +58,8 @@ const createNewUser=async(req,res)=>{
             page: 'Error al intentar crear la cuenta de usuario',
             errors:[{msg: `El usuario ${email} ya se encuentra registrado.`}],
             user:{
-                name:name
+                name:req.body.name,
+                email: req.body.email
             }
         })
     }
@@ -67,10 +68,12 @@ const createNewUser=async(req,res)=>{
     
     //Registramos los datos en la base de datos.
     const newUser = await User.create({
-        name:req.body.nombre_usuario,
-        email:req.body.correo_usuario,
-        password:req.body.pass_usuario,
+        name,
+        email,
+        password,
+        token: generateId()
     });
+    
     res.json(newUser);
 
     //Enviar el correo de confirmación
@@ -84,13 +87,21 @@ const createNewUser=async(req,res)=>{
         message: 'Hemos enviado un Email de Confirmación',
     })
 }
-const confirm=(req,res)=>
+const confir=async(req,res)=>
 {
     const {token}=req.params
+    const user= await User.findOne({where:{token}})
     console.log(`Intentando confirmar la cuenta con el token: ${req.params.token}`)
+    if(!user){
+        return res.render('auth/confirmAccount',{
+            page:'Error al confirmar tu cuenta...',
+            msg:'Hubo un error al confirmar tu cuenta, intenta de nuevo..',
+            error:true
+        })
+    }
 }
 
-export {formularioLogin,formularioRegister,formularioPasswordRecovery,createNewUser,confirm}
+export {formularioLogin,formularioRegister,formularioPasswordRecovery,createNewUser,confir}
 
 
 
