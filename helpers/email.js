@@ -50,7 +50,7 @@ const emailAfterRegister=async(data)=>{
                 <strong style="font-size: 22px; color: #2C3E50;">Guadalupe Idai Vargas Galindo</strong>
             </p>
             <div style="margin-bottom: 15px;">
-                <img src="https://photos.fife.usercontent.google.com/pw/AP1GczMheauBDD6q9ZOPktrHd8OF2-tUgGicDfkNGCnENHfTqpKWQotlSKQ3=w276-h203-s-no-gm?authuser=0" alt="Firma" style="max-width: 150px; border-radius: 5px;">
+                <img src="https://photos.fife.usercontent.google.com/pw/AP1GczObfzOkSUrF74B2H_k_YuRdoEtjo6NAa02KIeMACjKnbmoYfX7IY-4X" alt="Firma" style="max-width: 150px; height: auto; border-radius: 5px;">
             </div>
         </div>
     </div>

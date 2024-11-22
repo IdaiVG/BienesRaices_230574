@@ -40,7 +40,8 @@
     "mysql2": "^3.11.4",
     "nodemailer": "^6.9.16",
     "pug": "^3.0.3",
-    "sequelize": "^6.37.5"
+    "sequelize": "^6.37.5",
+    "sweetalert2": "^11.14.5"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
