@@ -36,7 +36,7 @@ const emailAfterRegister=async(data)=>{
         <div style="text-align: center; background: #D9EAF7; border: 1px solid #A3C4F3; padding: 15px; border-radius: 5px;">
             <p style="font-size: 20px; color: #1A73E8;"> <!-- Color de texto azul claro -->
                 Para completar el registro de tu cuenta, haz clic en el siguiente enlace:
-                <a href="${process.env.BACKEND_DOMAIN}:${process.env.BACKEND_PORT}/confirmAccount/${token}" style="color: #1A73E8; text-decoration: none; font-weight: bold;">Confirmar cuenta</a>
+                <a href="${process.env.BACKEND_DOMAIN}:${process.env.PORT ?? 3000}/auth/confirm/${token}" style="color: #1A73E8; text-decoration: none; font-weight: bold;">Confirmar cuenta</a>
             </p>
             <br>
             <p style="font-size: 18px; color: #FF6347;">

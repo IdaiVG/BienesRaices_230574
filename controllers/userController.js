@@ -3,7 +3,6 @@ import User from '../models/User.js';
 import {generateId} from "../helpers/tokens.js"
 import { emailAfterRegister } from "../helpers/email.js";
 import { where } from "sequelize";
-import { DateTime } from 'luxon'
 
 const formularioLogin=(req,res)=>{
     res.render('auth/login',{
@@ -69,17 +68,13 @@ const createNewUser=async(req,res)=>{
     }
     //console.log("Registrando a un nuevo usuario.");
    // console.log(req.body);
-    // Obtener la hora actual
-    const currentTime = DateTime.now().setZone('America/Mexico_City').toJSDate(); // Hora actual en México
-
+    
     //Registramos los datos en la base de datos.
     const newUser = await User.create({
         name,
         email,
         password,
-        token:generateId(),
-        createdAt: currentTime,  // Establecer la hora de creación
-        updatedAt: currentTime   // Establecer la hora de última actualización
+        token:generateId()
     });
     
     //res.json(newUser);
@@ -103,12 +98,11 @@ const createNewUser=async(req,res)=>{
 const confir=async(req,res)=>
 {
     const {token}=req.params;
-    console.log(token)
+    
     //verificamos si el token es valido
     const user= await User.findOne({where:{token}})
-    console.log(`Intentando confirmar la cuenta con el token: ${req.params.token}`)
     if(!user){
-        return res.render('auth/confirmAccount',{
+        return res.render('auth/ConfirmAccount',{
             page:'Error al confirmar tu cuenta...',
             message:'Hubo un error al confirmar tu cuenta, intenta de nuevo..',
             error:true
@@ -119,9 +113,9 @@ const confir=async(req,res)=>
     user.confirmed=true;
     //Es como hacer un commit el save
     await user.save();
-    res.render('auth/confirmAccount',{
+    res.render('auth/ConfirmAccount',{
         page:'Cuenta Confirmada',
-        message:'La cuenta se ha confirmado Correctamente ',
+        message:'La cuenta se ha confirmado Correctamente',
         error:false
     })
 }
@@ -136,6 +130,4 @@ export {formularioLogin,
     createNewUser,
     confir,
     checkToken}
-
-
 

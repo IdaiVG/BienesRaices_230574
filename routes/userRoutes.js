@@ -44,7 +44,7 @@ router.get("/login",formularioLogin/*Middelware*/)
 router.get("/createAccount",formularioRegister)
 router.post("/createAccount",formularioRegister)
 router.post("/createAccount",createNewUser)
-router.get("/confirmAccount/:token",confir )
+router.get("/confirm/:token", confir )
 router.get("/passwordRecovery",formularioPasswordRecovery)
 //Almacena el nuevo password
 router.get('/passwordRecovery/:token', checkToken)
