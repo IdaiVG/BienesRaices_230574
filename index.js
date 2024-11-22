@@ -4,20 +4,30 @@
 import express from 'express';
 import generalRoutes from './routes/generalRoutes.js'
 import userRoutes from './routes/userRoutes.js'
+import db from './db/config.js'
+import dotenv from 'dotenv'
+
+dotenv.config({path:'.env'})
 //const express = require('express'); //DECLARANDO UN OBJETO QUE VA A PERMITIR LEER PAGINAS ETC.importar la libreria para crear un servidor web
 
 //INSTANCIAR NUESTRA APLICACIÓN WEB
+//Conexión a la base de datos
+try{
+  await db.authenticate();//verifico las credenciales del usuario
+  db.sync({alter:true});//sincroniza las tablas con los modelos
+  console.log('Conexión Correcta a la Base de Datos')
+}catch(error){
+  console.log(error)
+}
 
 const app = express();
+//Habilitamos la lectura de datos desde formularios
+app.use(express.urlencoded({encoded:true}));
 
 //Definir la carpeta pública de recursos estáticos (assets)
 app.use(express.static('./public'));
 
-//CONFIGURAMOS NUESTRO SERVIDOR WEB (puerto donde estara escuchando nuestro sitio web)
-const port = 3000;
-app.listen(port, () => {
-  console.log(`La aplicación ha iniciado en el puerto: ${port}`);  
-});
+
 
 //Routing - Enrutamiento
 app.use('/',generalRoutes);
@@ -30,3 +40,9 @@ app.use('/auth/', userRoutes);
 app.set('view engine','pug')
 app.set('views','./views')//se define donde tendrá el proyecto las vistas
 //auth -> auntentificación
+
+//CONFIGURAMOS NUESTRO SERVIDOR WEB (puerto donde estara escuchando nuestro sitio web)
+const port =process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`La aplicación ha iniciado en el puerto: ${port}`);  
+});

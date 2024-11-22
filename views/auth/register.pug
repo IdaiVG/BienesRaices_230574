@@ -2,12 +2,19 @@ extends ../layout/index
 
 block contenido 
     div.py-10 
-        h1.text-center.font-extrabold.my-10.text-4xl.text-indigo-600 Bienes 
+        h1.text-center.font-extrabold.my-10.text-4xl.text-peri Bienes 
             span.font-normal.text-black Raíces 
         h2.text-center.font-extrabold.text-2xl=page
+
+        if errors
+            div(class="max-w-md mx-auto my-10")
+                each error in errors
+                    div(class="bg-reds text-white p-4 rounded-md flex items-center justify-between mb-2")
+                        p(class="text-sm font-bold")= error.msg
+                        button(class="ml-2 bg-transparent border-0 text-white" onclick="this.parentElement.style.display='none'") &times;
         .mt-8.mx-auto.max-w-md
             .bg-white.py-8.px-4.shadow
-                form.space-y-5.px-6(action="")
+                form.space-y-5.px-6(method="POST" action="/auth/newUser" noValidate)
                     div
                         label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold Nombre Completo: 
                         input#name.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(type="text" placeholder="Ej. Juanito Peréz" name="nombre_usuario")
@@ -19,11 +26,15 @@ block contenido
                         input#password.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(type="password" placeholder="Mínimo de 8 carácteres" name="pass_usuario")
                     div
                         label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold Confirmación de Contraseña: 
-                        input#passwordConfirm.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(type="password" placeholder="Debe coincidir con la anterior" name="pass_usuario")
+                        input#passwordConfirm.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(type="password" placeholder="Debe coincidir con la anterior" name="pass2_usuario")
 
                     div.flex.items-center.justify-between
-                        a.text-gray-500.text-xs(href="/auth/login" class="hover:underline decoration2 hover:decoration-red-600") ¿Ya tienes cuenta? Incia sesión
-                        a.text-gray-500.text-xs(href="/auth/passwordRecovery" class="hover:underline decoration2 hover:decoration-red-600") Olvide mi Contraseña
-                        
-
-                    input(class="w-full bg-indigo-600 hover:bg-red-700 text-white font-bold py-3 cursor-pointer" type="submit" value="Crear una Cuenta")
+                        a.text-gray-500.text-xs(href="/auth/login" class="hover:underline decoration2 hover:decoration-peri") ¿Ya tienes cuenta? Incia sesión
+                        a.text-gray-500.text-xs(href="/auth/passwordRecovery" class="hover:underline decoration2 hover:decoration-peri") Olvide mi Contraseña
+                    input(class="w-full bg-winkle hover:bg-palePurple text-white font-bold py-3 cursor-pointer" type="submit" value="Crear una Cuenta")
+    script.
+        document.querySelectorAll('.bg-redd').forEach(error => {
+            setTimeout(() => {
+                error.style.display = 'none';
+            }, 7000); 
+        });
