@@ -32,3 +32,9 @@ block contenido
                         a.text-gray-500.text-xs(href="/auth/login" class="hover:underline decoration2 hover:decoration-peri") ¿Ya tienes cuenta? Incia sesión
                         a.text-gray-500.text-xs(href="/auth/passwordRecovery" class="hover:underline decoration2 hover:decoration-peri") Olvide mi Contraseña
                     input(class="w-full bg-winkle hover:bg-palePurple text-white font-bold py-3 cursor-pointer" type="submit" value="Crear una Cuenta")
+    script.
+        document.querySelectorAll('.bg-redd').forEach(error => {
+            setTimeout(() => {
+                error.style.display = 'none';
+            }, 7000); 
+        });

@@ -9,6 +9,7 @@ export default {
       'palePurple': '#f3e8ff',
       'peri': '#c7d2fe',
       'reds':'#bd2929',
+      'green':'#A8E6A1',
     },
     extend: {},
   },

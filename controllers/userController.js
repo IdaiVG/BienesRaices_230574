@@ -2,6 +2,7 @@ import{check,validationResult} from "express-validator";
 import User from '../models/User.js';
 import {generateId} from "../helpers/tokens.js"
 import { emailAfterRegister } from "../helpers/email.js";
+import { where } from "sequelize";
 
 const formularioLogin=(req,res)=>{
     res.render('auth/login',{
@@ -33,75 +34,103 @@ const createNewUser=async(req,res)=>{
     await check('pass2_usuario').equals(req.body.pass_usuario).withMessage("La contraseña debe coincidir con la anterior").run(req)
     let resultado=validationResult(req)
     //return res.json(resultado.array())
+
     //verificamos que el usuario este vacio
     if(!resultado.isEmpty()){
         //Errores
         return res.render('auth/register',{
             page: 'Error al intentar crear la cuenta de usuario',
             errors:resultado.array(),
+            User:{
+                name:req.body.name,
+                email:req.body.correo_usuario
+            }
         })
     }
     else{
         console.log('Registrando a un Nuevo Usuario...');
         console.log(req.body);
     }
-    res.json(resultado.array());
 
     //Destructuura los parametros del request
-    const {name, email, password}=req.body
+    const {nombre_usuario:name, correo_usuario:email, pass_usuario:password}=req.body
     //Verificar que el usuario no existe previamente en la BD
     const existingUser=await User.findOne({where:{email}})
-    console.log(existingUser)
-
     if(existingUser){
         return res.render("auth/register",{
             page: 'Error al intentar crear la cuenta de usuario',
             errors:[{msg: `El usuario ${email} ya se encuentra registrado.`}],
             user:{
                 name:req.body.name,
-                email: req.body.email
+                email:req.body.correo_usuario
             }
-        })
+        });
     }
-    console.log("Registrando a un nuevo usuario.");
-    console.log(req.body);
+    //console.log("Registrando a un nuevo usuario.");
+   // console.log(req.body);
     
     //Registramos los datos en la base de datos.
     const newUser = await User.create({
         name,
         email,
         password,
-        token: generateId()
+        token:generateId()
     });
     
-    res.json(newUser);
+    //res.json(newUser);
 
     //Enviar el correo de confirmación
     emailAfterRegister({
-        name: newUser.name,
+        name:newUser.name,
         email:newUser.email,
         token:newUser.token
+        
     })
+    console.log(newUser.token)
     res.render('templates/message',{
         page: 'Cuenta creada correctamente',
-        message: 'Hemos enviado un Email de Confirmación',
+        message:`Hemos Enviado un Email de Confirmación a  ${email}, presione en el enlace`
+    
     })
 }
+
+//Funcion que comprueba una cuenta
 const confir=async(req,res)=>
 {
-    const {token}=req.params
+    const {token}=req.params;
+    console.log(token)
+    //verificamos si el token es valido
     const user= await User.findOne({where:{token}})
     console.log(`Intentando confirmar la cuenta con el token: ${req.params.token}`)
     if(!user){
         return res.render('auth/confirmAccount',{
             page:'Error al confirmar tu cuenta...',
-            msg:'Hubo un error al confirmar tu cuenta, intenta de nuevo..',
+            message:'Hubo un error al confirmar tu cuenta, intenta de nuevo..',
             error:true
         })
     }
+    // Confirmar Cuenta
+    user.token=null;
+    user.confirmed=true;
+    //Es como hacer un commit el save
+    await user.save();
+    res.render('auth/confirmAccount',{
+        page:'Cuenta Confirmada',
+        message:'La cuenta se ha confirmado Correctamente ',
+        error:false
+    })
 }
 
-export {formularioLogin,formularioRegister,formularioPasswordRecovery,createNewUser,confir}
+const checkToken =(req,res)=>{
+
+}
+
+export {formularioLogin,
+    formularioRegister,
+    formularioPasswordRecovery,
+    createNewUser,
+    confir,
+    checkToken}
 
 
 
