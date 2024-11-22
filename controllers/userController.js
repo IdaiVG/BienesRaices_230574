@@ -3,6 +3,7 @@ import User from '../models/User.js';
 import {generateId} from "../helpers/tokens.js"
 import { emailAfterRegister } from "../helpers/email.js";
 import { where } from "sequelize";
+import { DateTime } from 'luxon'
 
 const formularioLogin=(req,res)=>{
     res.render('auth/login',{
@@ -68,13 +69,17 @@ const createNewUser=async(req,res)=>{
     }
     //console.log("Registrando a un nuevo usuario.");
    // console.log(req.body);
-    
+    // Obtener la hora actual
+    const currentTime = DateTime.now().setZone('America/Mexico_City').toJSDate(); // Hora actual en México
+
     //Registramos los datos en la base de datos.
     const newUser = await User.create({
         name,
         email,
         password,
-        token:generateId()
+        token:generateId(),
+        createdAt: currentTime,  // Establecer la hora de creación
+        updatedAt: currentTime   // Establecer la hora de última actualización
     });
     
     //res.json(newUser);
