@@ -50,7 +50,7 @@ const emailAfterRegister=async(data)=>{
                 <strong style="font-size: 22px; color: #2C3E50;">Guadalupe Idai Vargas Galindo</strong>
             </p>
             <div style="margin-bottom: 15px;">
-                <img src="https://photos.fife.usercontent.google.com/pw/AP1GczObfzOkSUrF74B2H_k_YuRdoEtjo6NAa02KIeMACjKnbmoYfX7IY-4X" alt="Firma" style="max-width: 150px; height: auto; border-radius: 5px;">
+                <img src="https://static.vecteezy.com/system/resources/previews/025/866/358/non_2x/fake-autograph-samples-hand-drawn-signatures-examples-of-documents-certificates-and-contracts-with-inked-and-handwritten-lettering-vector.jpg" alt="Firma" style="max-width: 150px; height: auto; border-radius: 5px;">
             </div>
         </div>
     </div>
