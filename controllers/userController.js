@@ -110,7 +110,7 @@ const confir=async(req,res)=>
     }
     // Confirmar Cuenta
     user.token=null;
-    user.confirmed=true;
+    user.confirmado=true;
     //Es como hacer un commit el save
     await user.save();
     res.render('auth/ConfirmAccount',{
