@@ -1,5 +1,5 @@
 import express from 'express';
-import { formularioLogin,formularioRegister,formularioPasswordRecovery,createNewUser,confir,checkToken} from '../controllers/userController.js';
+import { formularioLogin,formularioRegister,formularioPasswordRecovery,createNewUser,confir,checkToken,passwordReset,verifyTokenPasswordRecovery,updatePassword} from '../controllers/userController.js';
 
 const router =  express.Router();
 
@@ -46,6 +46,9 @@ router.post("/createAccount",formularioRegister)
 router.post("/createAccount",createNewUser)
 router.get("/confirm/:token", confir )
 router.get("/passwordRecovery",formularioPasswordRecovery)
+router.post("/passwordRecovery",passwordReset)
 //Almacena el nuevo password
+router.get("/passwordRecovery/:token",verifyTokenPasswordRecovery)
+router.post("/passwordRecovery:token",updatePassword)
 router.get('/passwordRecovery/:token', checkToken)
 export default router;

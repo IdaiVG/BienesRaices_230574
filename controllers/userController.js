@@ -120,6 +120,48 @@ const confir=async(req,res)=>
     })
 }
 
+const passwordReset=async(req,res)=>{
+    await check(`Correo_usuario`).notEmpty().withMessage("El correo electrónico es un campo obligatorio.").isEmail().withMessage("El correo electrónico no tiene el formato de: usauario@dominio.extension").run(req)
+    let result=validationResult(req)
+    if(!result.isEmpty()){
+        console.log("Hay errores")
+        return res.render("auth/passwordRecovery",{
+            page: 'Error al intentar resetear la contraseña',
+            errors: result.array(),
+            csrfToken: req.csrfToken()
+        })
+    }
+    const{correo_usuario:email}=req.body
+    //VALIDACIÓN BACKEND
+    const existingUser=await User.findOne({where:{email,confirmado:1}})
+    if(!existingUser){
+        return res.render("auth/passwordRecovery",{
+            page:'Error no existe una cuenta autentucada asociada al correo electrónico ingresado.',
+            csrfToken:req.csrfToken(),
+            errors:[{msg:`Por favor revisa los datos e intentalo de nuevo`}],
+            user:{
+                email:email
+            }
+        })
+    }
+    console.log("El usuario si existe en la bd")
+    existingUser.password="";
+    existingUser.token=generateId();
+    existingUser.save();
+    //Enviar el correo de confirmación
+    emailChangePassword({
+        name:existingUser.name,
+        email:existingUser.email,
+        token:existingUser.token
+    })
+    res.render('templates/message',{
+        csrfToken:req.csrfToken(),
+        page:'Solicitud de actualización de contraseña aceptada',
+        message:'Hemos enviado un correo a : <poner el correo aqui>, para la actualización de la contraseña'
+    })
+}
+
+
 const checkToken =(req,res)=>{
 
 }
@@ -129,5 +171,6 @@ export {formularioLogin,
     formularioPasswordRecovery,
     createNewUser,
     confir,
-    checkToken}
+    checkToken,
+passwordReset}
 
