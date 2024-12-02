@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 
 dotenv.config({path:'.env'})
 
-const emailAfterRegister=async(data)=>{
+const registerEmail = async (data) => {
     const transport = nodemailer.createTransport({
         host: process.env.Email_HOST,
         port: process.env.Email_PORT,
@@ -62,7 +62,7 @@ const emailAfterRegister=async(data)=>{
     })
 }
 
-const emailChangePassword=async(data)=>{
+const passwordRecoveryEmail = async (data) => {
     const transport = nodemailer.createTransport({
         host: process.env.Email_HOST,
         port: process.env.Email_PORT,
@@ -103,4 +103,4 @@ const emailChangePassword=async(data)=>{
     })
 }
 
-export{emailAfterRegister,emailChangePassword}
+export {registerEmail,passwordRecoveryEmail};

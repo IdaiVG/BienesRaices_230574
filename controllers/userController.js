@@ -1,176 +1,245 @@
-import{check,validationResult} from "express-validator";
-import User from '../models/User.js';
-import {generateId} from "../helpers/tokens.js"
-import { emailAfterRegister } from "../helpers/email.js";
+import { check, validationResult } from "express-validator";
+import User from "../models/User.js";
+import { generateId } from "../helpers/tokens.js";
+import {registerEmail,passwordRecoveryEmail} from '../helpers/email.js'
 import { where } from "sequelize";
 
-const formularioLogin=(req,res)=>{
-    res.render('auth/login',{
-        //con la coma decimos que hay un segundo parámetro
-        autenticado:true,
+const formularioLogin = (req, res) => {
+    res.render('auth/login', {
+        autenticado: true,
         page: "Ingresa a la Plataforma"
-    })
+    });
 };
 
-const formularioRegister=async(request,response)=>{
-    response.render('auth/register',{
-        page: "Crea una Nueva Cuenta..."
-    })
+const formularioRegister = (request, response) => {
+    response.render('auth/register', {
+        page: "Crea una Nueva Cuenta...",
+        csrfToken : request.csrfToken()
+    });
 };
 
-const formularioPasswordRecovery = (request,response)=>{
-    response.render('auth/passwordRecovery',{
-        page: "Recuperación de Contraseña"
-    })
+const formularioPasswordRecovery = (request, response) => {
+    response.render('auth/passwordRecovery', {
+        page: "Recuperación de Contraseña",
+        csrfToken : request.csrfToken()
+    });
+};
+
+const resetPassword = async (req, res) => {
+    await check('correo_usuario')
+        .notEmpty().withMessage('El correo electrónico es un campo obligatorio')
+        .isEmail().withMessage('El correo electrónico no tiene el formato correcto')
+        .run(req);
+
+    let resultado = validationResult(req);
+
+    if (!resultado.isEmpty()) {
+        return res.render('auth/passwordRecovery', {
+            page: 'Recupera tu acceso a Bienes Raices',
+            csrfToken: req.csrfToken(),
+            errors: resultado.array()
+        });
+    }
+
+    const { correo_usuario } = req.body;
+
+    // Buscar el usuario
+    const user = await User.findOne({ where: { email: correo_usuario } });
+    if(!user){
+        return res.render('auth/passwordRecovery', {
+            page: 'Recupera tu acceso a Bienes Raices',
+            csrfToken: req.csrfToken(),
+            errors: [{msg:'UPSSS, El Correo no Pertenece a ningún usuario'}]
+        });
+    }
+    //Generar un token y enviar un email
+    user.token=generateId();
+    await user.save();
 }
+    const updatePassword = async (req, res) => {
+        await check('pass_usuario')
+        .notEmpty().withMessage('La contraseña es un campo obligatorio')
+        .isLength({ min: 8 }).withMessage('El Password debe ser de al menos 8 caracteres')
+        .run(req);
+    
+        let resultado = validationResult(req);
+        let tokenReset=req.params.token
+        if (!resultado.isEmpty()) {
+            return res.render(`auth/passwordRecovery/${tokenReset}`, {
+                page: 'Error en la actualización de contraseña',
+                csrfToken: req.csrfToken(),
+                errors: resultado.array(),
+                user:{
+                    token:tokenReset
+                }
+            });
+        }
+        if(!existingUser){
+            return res.rend3er("auth/passwordRecovery",{
+                page:'Error, el token ha expirado',
+                csrfToken:req.csrfToken(),
+                errors:[{msg:'Revisa los datos e intentalo de nuevo'}],
+            });
+        }
+        else{
+            tokenOwenUser.password=req.body.new_password;
+            tokenOwenUser.token=null;
+            tokenOwenUser.save();
 
-const createNewUser=async(req,res)=>{
-//Validación de los campos que se reciben del formulario
-    await check('nombre_usuario').notEmpty().withMessage("El nombre del usuario es un campo oblgatorio").run(req)
-    await check('correo_usuario').notEmpty().withMessage('El correo electrónico es un campo obligatorio').isEmail().withMessage('El correo electrónico no tiene el formato correcto').run(req);
+            //Responder una página al usuario
+            res.render('auth/ConfirmAccount',{
+                page:'Exelente..!',
+                msg:'Tu contraseña ha sido actualizada.',
+                error:false
+            })
+        }
+    
+        const { correo_usuario } = req.body;
+    
+        // Buscar el usuario
+        const user = await User.findOne({ where: { email: correo_usuario } });
+        if(!user){
+            return res.render('auth/passwordRecovery', {
+                page: 'Recupera tu acceso a Bienes Raices',
+                csrfToken: req.csrfToken(),
+                errors: [{msg:'UPSSS, El Correo no Pertenece a ningún usuario'}]
+            });
+        }
+        //Generar un token y enviar un email
+        user.token=generateId();
+        await user.save();
 
-    //await check('nombre_correo').notEmpty().withMessage("El correo del usuario es un campo oblgatorio").isEmail().withMessage("El correo electrónico no tiene el formato de: usaurio@dominio.extension").run(req)
-    await check('pass_usuario').notEmpty().withMessage("La contraseña es un campo Obligatorio").isLength({min:8}).withMessage("La contraseña del usuario debe ser de almenos 8 caracteres").run(req)
-    await check('pass2_usuario').equals(req.body.pass_usuario).withMessage("La contraseña debe coincidir con la anterior").run(req)
-    let resultado=validationResult(req)
-    //return res.json(resultado.array())
 
-    //verificamos que el usuario este vacio
-    if(!resultado.isEmpty()){
-        //Errores
-        return res.render('auth/register',{
-            page: 'Error al intentar crear la cuenta de usuario',
-            errors:resultado.array(),
+    //Enviar un Email
+    passwordRecoveryEmail({
+        email: user.email,
+        name: user.name,
+        token: user.token
+
+    })
+    //Renderizar un mensaje 
+    res.render('templates/message',{
+        page:'Restablece tu Contraseña',
+        msg:`Hemos Enviado un Email con las instrucciones para Reestablecer su contraseña`
+    })
+
+};
+
+
+const createNewUser = async (req, res) => {
+    // Validación de los campos que se reciben del formulario
+    await check('name').notEmpty().withMessage('El nombre no puede ir vacío').run(req);
+    await check('correo_usuario')
+        .notEmpty().withMessage('El correo electrónico es un campo obligatorio')
+        .isEmail().withMessage('El correo electrónico no tiene el formato correcto')
+        .run(req);
+    await check('pass_usuario')
+        .notEmpty().withMessage('La contraseña es un campo obligatorio')
+        .isLength({ min: 8 }).withMessage('El Password debe ser de al menos 8 caracteres')
+        .run(req);
+    await check('pass2_usuario')
+        .equals(req.body.pass_usuario).withMessage('La contraseña debe coincidir con la anterior')
+        .run(req);
+
+    let resultado = validationResult(req);
+
+    // Verificamos que el resultado esté vacío
+    if (!resultado.isEmpty()) {
+        // Errores
+        return res.render('auth/register', {
+            page: 'Error al intentar crear una cuenta',
+            csrfToken: req.csrfToken(),
+            errors: resultado.array(),
             User:{
                 name:req.body.name,
                 email:req.body.correo_usuario
             }
-        })
-    }
-    else{
+        });
+    } else {
         console.log('Registrando a un Nuevo Usuario...');
         console.log(req.body);
     }
 
-    //Destructuura los parametros del request
-    const {nombre_usuario:name, correo_usuario:email, pass_usuario:password}=req.body
-    //Verificar que el usuario no existe previamente en la BD
-    const existingUser=await User.findOne({where:{email}})
-    if(existingUser){
-        return res.render("auth/register",{
-            page: 'Error al intentar crear la cuenta de usuario',
-            errors:[{msg: `El usuario ${email} ya se encuentra registrado.`}],
-            user:{
+    const { name=nombre_usuario, correo_usuario: email, pass_usuario: password } = req.body;
+
+    // Verificamos que el usuario no existe previamente en la BD
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+        return res.render('auth/register', {
+            page: 'Error al intentar crear una cuenta',
+            csrfToken: req.csrfToken(),
+            errors: [{ msg: 'El usuario ya está registrado' }],
+            User:{
                 name:req.body.name,
                 email:req.body.correo_usuario
             }
         });
     }
-    //console.log("Registrando a un nuevo usuario.");
-   // console.log(req.body);
     
-    //Registramos los datos en la base de datos.
-    const newUser = await User.create({
+    // Registramos los datos en la BD
+    const newUser =await User.create({
         name,
         email,
-        password,
+        password, 
         token:generateId()
     });
-    
-    //res.json(newUser);
+    //Envia un email de confirmacion 
+    registerEmail({
+        name: newUser.name,
+        email: newUser.email,
+        token: newUser.token
+    }) 
 
-    //Enviar el correo de confirmación
-    emailAfterRegister({
-        name:newUser.name,
-        email:newUser.email,
-        token:newUser.token
-        
-    })
-    console.log(newUser.token)
+    
+    //Mostrar mensaje de confirmación 
     res.render('templates/message',{
-        page: 'Cuenta creada correctamente',
-        message:`Hemos Enviado un Email de Confirmación a  ${email}, presione en el enlace`
-    
+        page:'Cuenta Creada Correctamente',
+        msg:`Hemos Enviado un Email de Confirmación a  ${email}, presione en el enlace`
     })
-}
+};
+//Funcion que comprueba una cuenta 
+const confirm=async (req,res)=>{
 
-//Funcion que comprueba una cuenta
-const confir=async(req,res)=>
-{
     const {token}=req.params;
-    
-    //verificamos si el token es valido
+    //Verificamos si el token es valido
     const user= await User.findOne({where:{token}})
     if(!user){
         return res.render('auth/ConfirmAccount',{
             page:'Error al confirmar tu cuenta...',
-            message:'Hubo un error al confirmar tu cuenta, intenta de nuevo..',
+            msg:'Hubo un error al confirmar tu cuenta, intenta de nuevo..',
             error:true
         })
     }
+
     // Confirmar Cuenta
     user.token=null;
-    user.confirmado=true;
-    //Es como hacer un commit el save
+    user.confirmed=true;
     await user.save();
     res.render('auth/ConfirmAccount',{
         page:'Cuenta Confirmada',
-        message:'La cuenta se ha confirmado Correctamente',
+        msg:'La cuenta se ha confirmado Correctamente ',
         error:false
     })
 }
 
-const passwordReset=async(req,res)=>{
-    await check(`Correo_usuario`).notEmpty().withMessage("El correo electrónico es un campo obligatorio.").isEmail().withMessage("El correo electrónico no tiene el formato de: usauario@dominio.extension").run(req)
-    let result=validationResult(req)
-    if(!result.isEmpty()){
-        console.log("Hay errores")
-        return res.render("auth/passwordRecovery",{
-            page: 'Error al intentar resetear la contraseña',
-            errors: result.array(),
-            csrfToken: req.csrfToken()
-        })
-    }
-    const{correo_usuario:email}=req.body
-    //VALIDACIÓN BACKEND
-    const existingUser=await User.findOne({where:{email,confirmado:1}})
-    if(!existingUser){
-        return res.render("auth/passwordRecovery",{
-            page:'Error no existe una cuenta autentucada asociada al correo electrónico ingresado.',
-            csrfToken:req.csrfToken(),
-            errors:[{msg:`Por favor revisa los datos e intentalo de nuevo`}],
-            user:{
-                email:email
-            }
-        })
-    }
-    console.log("El usuario si existe en la bd")
-    existingUser.password="";
-    existingUser.token=generateId();
-    existingUser.save();
-    //Enviar el correo de confirmación
-    emailChangePassword({
-        name:existingUser.name,
-        email:existingUser.email,
-        token:existingUser.token
-    })
-    res.render('templates/message',{
-        csrfToken:req.csrfToken(),
-        page:'Solicitud de actualización de contraseña aceptada',
-        message:'Hemos enviado un correo a : <poner el correo aqui>, para la actualización de la contraseña'
-    })
-}
 
 
 const checkToken =(req,res)=>{
 
 }
+const newPassword=(req,res)=>{
+    
+}
 
-export {formularioLogin,
+
+export {
+    formularioLogin,
     formularioRegister,
     formularioPasswordRecovery,
     createNewUser,
-    confir,
+    confirm,
     checkToken,
-passwordReset}
-
+    newPassword,
+    resetPassword,
+    updatePassword
+};

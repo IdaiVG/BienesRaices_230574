@@ -6,28 +6,35 @@ import generalRoutes from './routes/generalRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import db from './db/config.js'
 import dotenv from 'dotenv'
-
+import csrf from 'csurf'
+import cookieParser from 'cookie-parser';
 dotenv.config({path:'.env'})
+
 //const express = require('express'); //DECLARANDO UN OBJETO QUE VA A PERMITIR LEER PAGINAS ETC.importar la libreria para crear un servidor web
 
 //INSTANCIAR NUESTRA APLICACIÓN WEB
-//Conexión a la base de datos
+//conexion a la Base de Datos
 try{
-  await db.authenticate();//verifico las credenciales del usuario
-  db.sync({alter:true});//sincroniza las tablas con los modelos
-  console.log('Conexión Correcta a la Base de Datos')
+  await db.authenticate(); //verifico las credenciales del usuario 
+  db.sync();
+  console.log('Conexion Correcta a la Base DE Datos')
 }catch(error){
   console.log(error)
 }
 
-const app = express();
-//Habilitamos la lectura de datos desde formularios
-app.use(express.urlencoded({encoded:true}));
 
+const app = express();
 //Definir la carpeta pública de recursos estáticos (assets)
 app.use(express.static('./public'));
 
+//Habilitar la lectura de datos desde formularios
+app.use(express.urlencoded({encoded:true}));
 
+//Habilitar Cookie Parser
+app.use(cookieParser())
+
+//Habilitar CSRF
+app.use(csrf({cookie:true}))
 
 //Routing - Enrutamiento
 app.use('/',generalRoutes);
@@ -42,7 +49,7 @@ app.set('views','./views')//se define donde tendrá el proyecto las vistas
 //auth -> auntentificación
 
 //CONFIGURAMOS NUESTRO SERVIDOR WEB (puerto donde estara escuchando nuestro sitio web)
-const port =process.env.PORT || 3000;
+const port = process.env.PORT ||3000;
 app.listen(port, () => {
   console.log(`La aplicación ha iniciado en el puerto: ${port}`);  
 });
