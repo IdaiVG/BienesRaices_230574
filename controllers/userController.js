@@ -1,5 +1,6 @@
 import { check, validationResult } from "express-validator";
 import User from "../models/User.js";
+import bcrypt from 'bcrypt'
 import { generateId } from "../helpers/tokens.js";
 import {registerEmail,passwordRecoveryEmail} from '../helpers/email.js'
 import { where } from "sequelize";
@@ -24,107 +25,6 @@ const formularioPasswordRecovery = (request, response) => {
         csrfToken : request.csrfToken()
     });
 };
-
-const resetPassword = async (req, res) => {
-    await check('correo_usuario')
-        .notEmpty().withMessage('El correo electrónico es un campo obligatorio')
-        .isEmail().withMessage('El correo electrónico no tiene el formato correcto')
-        .run(req);
-
-    let resultado = validationResult(req);
-
-    if (!resultado.isEmpty()) {
-        return res.render('auth/passwordRecovery', {
-            page: 'Recupera tu acceso a Bienes Raices',
-            csrfToken: req.csrfToken(),
-            errors: resultado.array()
-        });
-    }
-
-    const { correo_usuario } = req.body;
-
-    // Buscar el usuario
-    const user = await User.findOne({ where: { email: correo_usuario } });
-    if(!user){
-        return res.render('auth/passwordRecovery', {
-            page: 'Recupera tu acceso a Bienes Raices',
-            csrfToken: req.csrfToken(),
-            errors: [{msg:'UPSSS, El Correo no Pertenece a ningún usuario'}]
-        });
-    }
-    //Generar un token y enviar un email
-    user.token=generateId();
-    await user.save();
-}
-    const updatePassword = async (req, res) => {
-        await check('pass_usuario')
-        .notEmpty().withMessage('La contraseña es un campo obligatorio')
-        .isLength({ min: 8 }).withMessage('El Password debe ser de al menos 8 caracteres')
-        .run(req);
-    
-        let resultado = validationResult(req);
-        let tokenReset=req.params.token
-        if (!resultado.isEmpty()) {
-            return res.render(`auth/passwordRecovery/${tokenReset}`, {
-                page: 'Error en la actualización de contraseña',
-                csrfToken: req.csrfToken(),
-                errors: resultado.array(),
-                user:{
-                    token:tokenReset
-                }
-            });
-        }
-        if(!existingUser){
-            return res.rend3er("auth/passwordRecovery",{
-                page:'Error, el token ha expirado',
-                csrfToken:req.csrfToken(),
-                errors:[{msg:'Revisa los datos e intentalo de nuevo'}],
-            });
-        }
-        else{
-            tokenOwenUser.password=req.body.new_password;
-            tokenOwenUser.token=null;
-            tokenOwenUser.save();
-
-            //Responder una página al usuario
-            res.render('auth/ConfirmAccount',{
-                page:'Exelente..!',
-                msg:'Tu contraseña ha sido actualizada.',
-                error:false
-            })
-        }
-    
-        const { correo_usuario } = req.body;
-    
-        // Buscar el usuario
-        const user = await User.findOne({ where: { email: correo_usuario } });
-        if(!user){
-            return res.render('auth/passwordRecovery', {
-                page: 'Recupera tu acceso a Bienes Raices',
-                csrfToken: req.csrfToken(),
-                errors: [{msg:'UPSSS, El Correo no Pertenece a ningún usuario'}]
-            });
-        }
-        //Generar un token y enviar un email
-        user.token=generateId();
-        await user.save();
-
-
-    //Enviar un Email
-    passwordRecoveryEmail({
-        email: user.email,
-        name: user.name,
-        token: user.token
-
-    })
-    //Renderizar un mensaje 
-    res.render('templates/message',{
-        page:'Restablece tu Contraseña',
-        msg:`Hemos Enviado un Email con las instrucciones para Reestablecer su contraseña`
-    })
-
-};
-
 
 const createNewUser = async (req, res) => {
     // Validación de los campos que se reciben del formulario
@@ -160,7 +60,7 @@ const createNewUser = async (req, res) => {
         console.log(req.body);
     }
 
-    const { name=nombre_usuario, correo_usuario: email, pass_usuario: password } = req.body;
+    const { name, correo_usuario: email, pass_usuario: password } = req.body;
 
     // Verificamos que el usuario no existe previamente en la BD
     const existingUser = await User.findOne({ where: { email } });
@@ -221,14 +121,110 @@ const confirm=async (req,res)=>{
         error:false
     })
 }
+const resetPassword = async (req, res) => {
+    await check('correo_usuario')
+        .notEmpty().withMessage('El correo electrónico es un campo obligatorio')
+        .isEmail().withMessage('El correo electrónico no tiene el formato correcto')
+        .run(req);
+
+    let resultado = validationResult(req);
+
+    if (!resultado.isEmpty()) {
+        return res.render('auth/passwordRecovery', {
+            page: 'Recupera tu acceso a Bienes Raices',
+            csrfToken: req.csrfToken(),
+            errors: resultado.array()
+        });
+    }
+
+    const { correo_usuario } = req.body;
+
+    // Buscar el usuario
+    const user = await User.findOne({ where: { email: correo_usuario } });
+    if(!user){
+        return res.render('auth/passwordRecovery', {
+            page: 'Recupera tu acceso a Bienes Raices',
+            csrfToken: req.csrfToken(),
+            errors: [{msg:'UPSSS, El Correo no Pertenece a ningún usuario'}]
+        });
+    }
+    //Generar un token y enviar un email
+    user.token=generateId();
+    await user.save();
+
+    //Enviar un Email
+    passwordRecoveryEmail({
+        email: user.email,
+        name: user.name,
+        token: user.token
+
+    })
+    //Renderizar un mensaje 
+    res.render('templates/message',{
+        page:'Restablece tu Contraseña',
+        msg:`Hemos Enviado un Email con las instrucciones para Reestablecer su contraseña`
+    })
+
+};
 
 
+const checkToken = async(req,res)=>{
+    const { token } =req.params;
+    const user=await User.findOne({where: {token}})
+    if(!user){
+        return res.render('auth/ConfirmAccount',{
+            page:'Restablece tu Contraseña...',
+            msg:'Hubo un error al validar tu información , intenta de nuevo..',
+            error:true
+        })
+    }
 
-const checkToken =(req,res)=>{
+    //Formulario para modificar el password
+    res.render('auth/reset-password',{
+        page: 'Restablece tu Contraseña',
+        csrfToken: req.csrfToken()
+
+    })
+
+
 
 }
-const newPassword=(req,res)=>{
-    
+const newPassword= async(req,res)=>{
+    //Validar el password
+    await check('new_password')
+        .notEmpty().withMessage('La contraseña es un campo obligatorio')
+        .isLength({ min: 8 }).withMessage('El Password debe ser de al menos 8 caracteres')
+        .run(req);
+    await check('new_password2')
+        .equals(req.body.new_password).withMessage('La contraseña debe coincidir con la anterior')
+        .run(req);
+
+    let resultado = validationResult(req);
+    // Verificamos que el resultado esté vacío
+    if (!resultado.isEmpty()) {
+        // Errores
+        return res.render('auth/register', {
+            page: 'Reestablece tu Contraseña',
+            csrfToken: req.csrfToken(),
+            errors: resultado.array()
+        });
+    }
+    const { token }=req.params
+    const {new_password}=req.body
+    //Identificar quien hace el cambio
+    const user =await User.findOne({where:{token}})
+
+    //  Hashear el nuevo password
+    const salt= await bcrypt.genSalt(10)
+    user.password=await bcrypt.hash(new_password,salt);
+    user.token=null;
+
+    await user.save();
+
+    res.render('auth/ConfirmAccount',{
+        page: 'Password Reestablecido',
+        msg:'El password se Guardó correctamente '
+    })
 }
 
 
@@ -240,6 +236,5 @@ export {
     confirm,
     checkToken,
     newPassword,
-    resetPassword,
-    updatePassword
+    resetPassword
 };

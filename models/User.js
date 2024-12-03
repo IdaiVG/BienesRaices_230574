@@ -23,11 +23,6 @@ const User=db.define('tbb_users',{
             //Genaramos la clave para el hasheo, se recomienda 10 rondas de aleatorización para no consumir demasiados recursos de hadware y hacer lento el proceso
             const salt= await bcrypt.genSalt(10)
             user.password=await bcrypt.hash(user.password,salt);
-        },
-        beforeUpdate: async function(user){
-            //Generamos la clave para el hasheo, se recomiendan 10 rondas de aleatorización
-            const salt=await bcrypt.gentSalt(10)
-            user.password=await bcrypt.hash(user.password,salt);
         }
     }
 })

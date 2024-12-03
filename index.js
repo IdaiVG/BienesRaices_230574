@@ -2,13 +2,11 @@
 // commin JS
 
 import express from 'express';
-import generalRoutes from './routes/generalRoutes.js'
-import userRoutes from './routes/userRoutes.js'
-import db from './db/config.js'
-import dotenv from 'dotenv'
+import generalRoutes from './routes/generalRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import db from './db/config.js';
 import csrf from 'csurf'
 import cookieParser from 'cookie-parser';
-dotenv.config({path:'.env'})
 
 //const express = require('express'); //DECLARANDO UN OBJETO QUE VA A PERMITIR LEER PAGINAS ETC.importar la libreria para crear un servidor web
 
@@ -17,7 +15,7 @@ dotenv.config({path:'.env'})
 try{
   await db.authenticate(); //verifico las credenciales del usuario 
   db.sync();
-  console.log('Conexion Correcta a la Base DE Datos')
+  console.log('Conexion Correcta a la Base de Datos')
 }catch(error){
   console.log(error)
 }

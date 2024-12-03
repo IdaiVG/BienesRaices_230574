@@ -13,10 +13,9 @@ const registerEmail = async (data) => {
         },
     });
 
-    //console.log(data)
     const { email, name, token } = data;
 
-    //Enviar el email
+    // Enviar el email
     await transport.sendMail({
         from: 'BienesRaices_230574.com',
         to: email,
@@ -72,10 +71,8 @@ const passwordRecoveryEmail = async (data) => {
         },
     });
 
-    //console.log(data)
     const { email, name, token } = data;
-
-    //Enviar el email
+    // Enviar el email
     await transport.sendMail({
         from: 'BienesRaices_230574.com',
         to: email,
