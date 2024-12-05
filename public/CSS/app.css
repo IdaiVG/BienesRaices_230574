@@ -613,6 +613,10 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(168 230 161 / var(--tw-bg-opacity));
 }
+.bg-peri {
+  --tw-bg-opacity: 1;
+  background-color: rgb(199 210 254 / var(--tw-bg-opacity));
+}
 .bg-reds {
   --tw-bg-opacity: 1;
   background-color: rgb(189 41 41 / var(--tw-bg-opacity));
@@ -624,10 +628,6 @@ video {
 .bg-winkle {
   --tw-bg-opacity: 1;
   background-color: rgb(221 214 254 / var(--tw-bg-opacity));
-}
-.bg-peri {
-  --tw-bg-opacity: 1;
-  background-color: rgb(199 210 254 / var(--tw-bg-opacity));
 }
 .p-4 {
   padding: 1rem;

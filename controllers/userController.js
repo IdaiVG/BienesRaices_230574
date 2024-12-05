@@ -8,10 +8,79 @@ import { where } from "sequelize";
 const formularioLogin = (req, res) => {
     res.render('auth/login', {
         autenticado: true,
-        page: "Ingresa a la Plataforma"
+        page: "Ingrese a la Plataforma",
+        csrfToken: req.csrfToken()
     });
 };
+const authenticate = async (req, res) => {
+    // Validación de campos
+    await check('correo_usuario')
+    .notEmpty().withMessage('El correo electrónico es un campo obligatorio')
+    .isEmail().withMessage('Debe ser un correo válido')
+    .run(req);
+    await check('pass_usuario')
+    .notEmpty().withMessage('La contraseña es un campo obligatorio')
+    .run(req);
+    const resultado = validationResult(req);
 
+    if (!resultado.isEmpty()) {
+        return res.render('auth/login', {
+            page: 'Error al intentar iniciar sesión',
+            csrfToken: req.csrfToken(),
+            errors: resultado.array()
+        });
+    }
+
+    const { correo_usuario: email, pass_usuario: password } = req.body;
+
+    try {
+        // Comprobar si el usuario existe
+        const user = await User.findOne({ where: { email } });
+        if (!user) {
+            return res.render('auth/login', {
+                page: 'Iniciar Sesión',
+                csrfToken: req.csrfToken(),
+                errors: [{ msg: 'El Usuario No Existe' }]
+            });
+        }
+
+        // Comprobar si el usuario está confirmado
+        if (!user.confirmed) {
+            return res.render('auth/login', {
+                page: 'Iniciar Sesión',
+                csrfToken: req.csrfToken(),
+                errors: [{ msg: 'Tu Cuenta no ha sido Confirmada' }]
+            });
+        }
+
+        // Revisar el password
+        if (!user.verificarPassword(password)) {
+            return res.render('auth/login', {
+                page: 'Iniciar Sesión',
+                csrfToken: req.csrfToken(),
+                errors: [{ msg: 'La Contraseña es Incorrecta' }]
+            });
+        }
+
+        // Generar el token JWT
+        const token = generarJWT({ id: user.id, nombre: user.name });
+
+        // Almacenar el token en una cookie
+        return res.cookie('_token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // Usar secure solo en producción
+            sameSite: 'strict', // Protege contra ataques CSRF
+        }).redirect('/myProperties');
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).render('auth/login', {
+            page: 'Iniciar Sesión',
+            csrfToken: req.csrfToken(),
+            errors: [{ msg: 'Ocurrió un error inesperado. Intenta de nuevo.' }]
+        });
+    }
+};
 const formularioRegister = (request, response) => {
     response.render('auth/register', {
         page: "Crea una Nueva Cuenta...",
@@ -230,6 +299,7 @@ const newPassword= async(req,res)=>{
 
 export {
     formularioLogin,
+    authenticate,
     formularioRegister,
     formularioPasswordRecovery,
     createNewUser,
