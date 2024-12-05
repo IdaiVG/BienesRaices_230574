@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 
 dotenv.config({path:'.env'})
 
-const emailAfterRegister=async(data)=>{
+const registerEmail = async (data) => {
     const transport = nodemailer.createTransport({
         host: process.env.Email_HOST,
         port: process.env.Email_PORT,
@@ -13,10 +13,9 @@ const emailAfterRegister=async(data)=>{
         },
     });
 
-    //console.log(data)
     const { email, name, token } = data;
 
-    //Enviar el email
+    // Enviar el email
     await transport.sendMail({
         from: 'BienesRaices_230574.com',
         to: email,
@@ -61,4 +60,44 @@ const emailAfterRegister=async(data)=>{
 
     })
 }
-export{emailAfterRegister}
+
+const passwordRecoveryEmail = async (data) => {
+    const transport = nodemailer.createTransport({
+        host: process.env.Email_HOST,
+        port: process.env.Email_PORT,
+        auth: {
+            user: process.env.Email_USER,
+            pass: process.env.Email_PASS,
+        },
+    });
+
+    const { email, name, token } = data;
+    // Enviar el email
+    await transport.sendMail({
+        from: 'BienesRaices_230574.com',
+        to: email,
+        subject:'Solicitud de actualización de contraseña en BienesRaíces.com',
+        text:'Por favor actualiza la contraseña para ingresar a la plataforma',
+        html:`
+        <header style="font-family: Arial, sans-serif; text-align: center; line-height: 1.2;">
+        <h1 style="font-weight: bold; color: #333;">Bienes Raíces</h1>
+    </header>
+    <div style="font-family: Arial, sans-serif; text-align: justify; line-height: 1.6; color: #333; background-color: #F9F9F9; padding: 25px; border: 1px solid #ddd; border-radius: 8px;">
+        <h2>Hola, <span style="color: #E74C3C;">${name}</span></h2> <!-- Color de nombre en rojo -->
+        <p style="font-size: 18px; color: #555;">
+           Has reportado el olvido o perdida de tu contraseña para acceder a tu cuenta de BienesRaíces
+        </p>
+        <br>
+        <div style="text-align: center; background: #D9EAF7; border: 1px solid #A3C4F3; padding: 15px; border-radius: 5px;">
+            <p style="font-size: 20px; color: #1A73E8;"> <!-- Color de texto azul claro -->
+                Por lo que necesitas ingresar en el siguiente enlace:
+                <a href="${process.env.BACKEND_DOMAIN}:${process.env.PORT ?? 3000}/auth/passwordRecovery/${token}" style="color: #1A73E8; text-decoration: none; font-weight: bold;">Actualiza la Contraseña</a>
+            </p>
+            <br>
+           
+        `
+
+    })
+}
+
+export {registerEmail,passwordRecoveryEmail};
