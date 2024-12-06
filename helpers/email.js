@@ -23,7 +23,7 @@ await transport.sendMail({
     text: 'Ya casi puedes usar nuestra plataforma, solo falta confirmar tu cuenta.',
     html: `
     <header style="font-family: Arial, sans-serif; text-align: center; line-height: 1.2; background-color: winkle; padding: 20px; border-radius: 8px;">
-        <h1 style="font-weight: bold; color: #black;">Bienes Raíces</h1>
+        <h1 style="font-weight: bold; color: black;">Bienes Raíces</h1>
         <h2 style="color: peri;">Confirmación de cuenta</h2>
     </header>
     <div style="font-family: Arial, sans-serif; text-align: justify; line-height: 1.6; color: #black; background-color: palePurple; padding: 25px; border: 1px solid winkle; border-radius: 8px;">
@@ -94,7 +94,7 @@ const passwordRecoveryEmail = async (data) => {
                     Por lo que necesitas ingresar en el siguiente enlace:
                 </p>
                 <div style="text-align: center; margin: 20px 0;">
-                    <a href="${process.env.BACKEND_URL}:${process.env.PORT ?? 3000}/auth/confirm/${token}" 
+                    <a href="${process.env.BACKEND_URL}:${process.env.PORT ?? 3000}/auth/passwordRecovery/${token}" 
                        style="background-color: green; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-size: 16px;">
                        Confirmar Cuenta
                     </a>
