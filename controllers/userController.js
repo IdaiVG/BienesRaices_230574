@@ -1,17 +1,18 @@
 import { check, validationResult } from "express-validator";
 import User from "../models/User.js";
 import bcrypt from 'bcrypt'
-import { generateId } from "../helpers/tokens.js";
+import { generateId,generarJWT } from "../helpers/tokens.js";
 import {registerEmail,passwordRecoveryEmail} from '../helpers/email.js'
-import { where } from "sequelize";
+
 
 const formularioLogin = (req, res) => {
     res.render('auth/login', {
         autenticado: true,
-        page: "Ingrese a la Plataforma",
+        page: "Ingresa a la Plataforma",
         csrfToken: req.csrfToken()
     });
 };
+
 const authenticate = async (req, res) => {
     // Validación de campos
     await check('correo_usuario')
@@ -173,7 +174,7 @@ const confirm=async (req,res)=>{
     //Verificamos si el token es valido
     const user= await User.findOne({where:{token}})
     if(!user){
-        return res.render('auth/ConfirmAccount',{
+        return res.render('auth/confirmAccount',{
             page:'Error al confirmar tu cuenta...',
             msg:'Hubo un error al confirmar tu cuenta, intenta de nuevo..',
             error:true
@@ -184,7 +185,7 @@ const confirm=async (req,res)=>{
     user.token=null;
     user.confirmed=true;
     await user.save();
-    res.render('auth/ConfirmAccount',{
+    res.render('auth/confirmAccount',{
         page:'Cuenta Confirmada',
         msg:'La cuenta se ha confirmado Correctamente ',
         error:false
@@ -241,7 +242,7 @@ const checkToken = async(req,res)=>{
     const { token } =req.params;
     const user=await User.findOne({where: {token}})
     if(!user){
-        return res.render('auth/ConfirmAccount',{
+        return res.render('auth/confirmAccount',{
             page:'Restablece tu Contraseña...',
             msg:'Hubo un error al validar tu información , intenta de nuevo..',
             error:true
@@ -290,7 +291,7 @@ const newPassword= async(req,res)=>{
 
     await user.save();
 
-    res.render('auth/ConfirmAccount',{
+    res.render('auth/confirmAccount',{
         page: 'Password Reestablecido',
         msg:'El password se Guardó correctamente '
     })

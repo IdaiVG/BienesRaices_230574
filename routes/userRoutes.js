@@ -40,16 +40,18 @@ router.delete("/deleteUser/:email", function(request,response){
     response.send(`Se ha solicitado la eliminación del usuario asociado al correo: ${request.params.email}`)
 })
 
-router.get("/login",formularioLogin/*Middelware*/)
+// Rutas de autenticación
+router.get("/login", formularioLogin);
 router.post("/login", authenticate);
-router.get("/createAccount",formularioRegister)
-router.post("/createAccount",formularioRegister)
-router.get("/passwordRecovery",formularioPasswordRecovery)
-router.post("/passwordRecovery", resetPassword)
-router.get('/confirm/:token',confirm )
 
-//Almacena el nuevo password
-router.get('/passwordRecovery/:token', checkToken)
-router.post('/passwordRecovery/:token', newPassword)
+router.get("/createAccount", formularioRegister);
+router.post("/createAccount", createNewUser);
+
+router.get("/passwordRecovery", formularioPasswordRecovery);
+router.post("/passwordRecovery", resetPassword);
+
+router.get('/confirm/:token', confirm);
+router.get('/passwordRecovery/:token', checkToken);
+router.post('/passwordRecovery/:token', newPassword);
 
 export default router;
