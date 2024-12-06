@@ -215,9 +215,12 @@ const resetPassword = async (req, res) => {
         return res.render('auth/passwordRecovery', {
             page: 'Recupera tu acceso a Bienes Raices',
             csrfToken: req.csrfToken(),
-            errors: [{msg:'UPSSS, El Correo no Pertenece a ningún usuario'}]
+            errors: [{msg:'El Correo no Pertenece a ningún usuario'}]
         });
     }
+
+    //Campo de contraseñas vacio
+    user.password="";
     //Generar un token y enviar un email
     user.token=generateId();
     await user.save();
@@ -232,17 +235,15 @@ const resetPassword = async (req, res) => {
     //Renderizar un mensaje 
     res.render('templates/message',{
         page:'Restablece tu Contraseña',
-        msg:`Hemos Enviado un Email con las instrucciones para Reestablecer su contraseña`
+        msg:`Hemos Enviado un Email a ${correo_usuario} con las instrucciones para Reestablecer su contraseña`
     })
 
 };
-
-
 const checkToken = async(req,res)=>{
     const { token } =req.params;
     const user=await User.findOne({where: {token}})
-    if(!user){
-        return res.render('auth/confirmAccount',{
+    if(!user || !user.confirmed){
+        return res.render('auth/ConfirmAccount',{
             page:'Restablece tu Contraseña...',
             msg:'Hubo un error al validar tu información , intenta de nuevo..',
             error:true
@@ -291,11 +292,12 @@ const newPassword= async(req,res)=>{
 
     await user.save();
 
-    res.render('auth/confirmAccount',{
+    res.render('auth/ConfirmAccount',{
         page: 'Password Reestablecido',
         msg:'El password se Guardó correctamente '
     })
 }
+
 
 
 export {

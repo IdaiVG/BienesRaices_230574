@@ -73,11 +73,12 @@ const passwordRecoveryEmail = async (data) => {
             pass: process.env.Email_PASS,
         },
     });
+    const { email,name,token }= data;
     await transport.sendMail({
         from: 'BienesRaices_230499',
         to: email,
         subject: 'Reestablece tu contraseña...',
-        text: `Estimado ${name}, haz solicitado el cambio de contraseña de tu cuenta en BienesRaices_230499.`,
+        text: `Estimado ${ name }, haz solicitado el cambio de contraseña de tu cuenta en BienesRaices_230499.`,
         html: `
             <header style="font-family: bold; text-align: center; line-height: 0.5;">
                 <h2>Bienes Raices</h2>
