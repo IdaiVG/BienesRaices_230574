@@ -13,7 +13,7 @@ Para poder demostrar y aprender la creación y consumo de interfaces de Programa
 |10.|24/10/2024|Operaciones Básicas de una API a traves de los verbos HTTP|12|⭐ Finalizada|
 |11.|05/11/2024|Creación de Formularios Para el Ingreso, Registro y Recuperación de Contraseña ded los Usuarios|13|⭐ Finalizada|
 |12.|14/11/2024|Implementación de validación en formulario y duplicidad en base de datos|30|⭐ Finalizada.|
-|12.|21/11/2024|Implementación de validación en formulario de recuperación de contraseña||⭐ Activa.|
+|13.|21/11/2024|Implementación de validación en formulario de recuperación de contraseña||⭐ Activa.|
 
 
 ## Autor

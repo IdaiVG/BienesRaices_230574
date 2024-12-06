@@ -2,7 +2,7 @@ extends ../layout/index
 
 block contenido
     div.py-10
-        h1.text-center.font-extrabold.my-10.text-4xl.text-pigmentgreen Bienes 
+        h1.text-center.font-extrabold.my-10.text-4xl.text-peri Bienes 
             span.font-normal.text-black Raíces
         h2.text-center.font-extrabold.text-2xl= page
 
@@ -44,8 +44,8 @@ block contenido
                         input#password2.w-full.px-3.py-2.border-2.border-black.rounded-md(type="password" placeholder="Minimo de 8 caracteres" name="pass2_usuario")
                     div.flex.items-center.justify-between
                         a.text-gray-500.text-xs(href="/auth/login" class="hover:underline decoration-2 hover:decoration-peri") ¿Ya tienes cuenta? Inicia Sesión
-                        a.text-gray-500.text-xs(href="/auth/passwordRecovery" class="hover:underline decoration-2 hover:decoration-azulrey") Recuperar Contraseña
-                    input(class="w-full bg-peri hover:bg-celadon text-black font-bold py-3 cursor-pointer" type="submit" value="Crear Cuenta")
+                        a.text-gray-500.text-xs(href="/auth/passwordRecovery" class="hover:underline decoration-2 hover:decoration-peri") Recuperar Contraseña
+                    input(class="w-full bg-peri hover:bg-palePurple text-black font-bold py-3 cursor-pointer" type="submit" value="Crear Cuenta")
 
     script.
         document.querySelectorAll('.alert').forEach(error => {
