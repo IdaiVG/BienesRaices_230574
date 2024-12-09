@@ -264,8 +264,8 @@ const newPassword= async(req,res)=>{
         .notEmpty().withMessage('La contraseña es un campo obligatorio')
         .isLength({ min: 8 }).withMessage('El Password debe ser de al menos 8 caracteres')
         .run(req);
-    await check('new_password2')
-        .equals(req.body.new_password).withMessage('La contraseña debe coincidir con la anterior')
+    await check('confirm_new_password')
+        .equals(req.body.confirm_new_password).withMessage('La contraseña debe coincidir con la anterior')
         .run(req);
 
     let resultado = validationResult(req);
