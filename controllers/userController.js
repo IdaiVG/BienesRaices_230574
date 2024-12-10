@@ -78,7 +78,7 @@ const authenticate = async (req, res) => {
         // Almacenar el token en una cookie
         return res.cookie('_token', token, {
             httpOnly: true,
-        }).redirect('/myProperties');
+        }).redirect('/properties/myproperties');
     } catch (error) {
         console.error(error);
         return res.status(500).render('auth/login', {
